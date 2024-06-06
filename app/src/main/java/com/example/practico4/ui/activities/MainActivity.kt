@@ -1,5 +1,6 @@
 package com.example.practico4.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -55,6 +56,8 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
     }
 
     override fun onLibrosClick(libro: Libro) {
-        TODO("Not yet implemented")
+        val intent = Intent(this, LibroDetailActivity::class.java)
+        intent.putExtra("categoriaId", libro.id)
+        startActivity(intent)
     }
 }
