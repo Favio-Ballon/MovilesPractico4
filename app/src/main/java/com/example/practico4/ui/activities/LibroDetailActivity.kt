@@ -1,5 +1,6 @@
 package com.example.practico4.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -10,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.practico4.R
 import com.example.practico4.databinding.ActivityLibroDetailBinding
-import com.example.practico4.databinding.ActivityMainBinding
 import com.example.practico4.ui.viewmodels.LibroDetailViewModel
 
 class LibroDetailActivity : AppCompatActivity() {
@@ -28,12 +28,17 @@ class LibroDetailActivity : AppCompatActivity() {
             insets
         }
 
-        id = intent.getIntExtra("categoriaId", -1)
+        id = intent.getIntExtra("libroId", -1)
         if (id != -1) {
             model.loadCategory(id)
         }
         setupViewModelObservers()
+        setupEventListeners()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        model.loadCategory(id)
     }
 
     private fun setupViewModelObservers() {
@@ -43,7 +48,7 @@ class LibroDetailActivity : AppCompatActivity() {
             }
             binding.lblLibroTitulo.text = it.nombre
             binding.lblLibroDetailAutor.text = it.autor
-            binding.lblLibroDetailISBN.text = it.ISBN
+            binding.lblLibroDetailISBN.text = it.isbn
             binding.lblLibroDetailRating.text = it.calificacion.toString()
             binding.lblLibroDetailSinopsis.text = it.sinopsis
             Log.d("LibroDetailActivity", it.imagen)
@@ -51,5 +56,27 @@ class LibroDetailActivity : AppCompatActivity() {
                 .load(it.imagen)
                 .into(binding.imagenLibro)
         }
+        model.closeActivity.observe(this) {
+            if (it) {
+                finish()
+
+            }
+        }
     }
+
+    private fun setupEventListeners() {
+
+        binding.btnEditar.setOnClickListener {
+                val intent = Intent(this, LibroSaveActivity::class.java)
+                intent.putExtra("libroId", id)
+                startActivity(intent)
+        }
+
+        binding.btnBorrar.setOnClickListener {
+            model.deleteLibro(id)
+        }
+
+    }
+
+
 }

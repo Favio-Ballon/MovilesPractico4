@@ -1,5 +1,6 @@
 package com.example.practico4.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,24 @@ class LibroSaveViewModel  : ViewModel() {
     }
     val closeActivity: LiveData<Boolean> get() = _closeActivity
 
+    private val _libro: MutableLiveData<Libro?> by lazy {
+        MutableLiveData<Libro?>(null)
+    }
+    val libro: LiveData<Libro?> get() = _libro
+
+    fun loadCategory(id: Int) {
+        LibroRepository.getLibro(id,
+            success = {
+                _libro.value = it
+            },
+            failure = {
+                it.printStackTrace()
+            })
+    }
+
+
     fun saveLibro(
+        id: Int,
         nombre: String,
         autor: String,
         editorial: String,
@@ -22,25 +40,44 @@ class LibroSaveViewModel  : ViewModel() {
         sinopsis : String,
         calificacion: Int
     ) {
-        val Libro = Libro(
+
+        val libro = Libro(
             nombre = nombre,
             autor = autor,
             editorial = editorial,
-            ISBN = ISBN,
+            isbn = ISBN,
             imagen = imagen,
             sinopsis = sinopsis,
             calificacion = calificacion
         )
-        LibroRepository.insertLibro(
-            Libro,
-            success = {
-                _closeActivity.value = true
-            },
-            failure = {
-                it.printStackTrace()
-            })
+
+        if (id != -1) {
+            Log.d("LibroSaveViewModel", "saveCategory: $id")
+
+            libro.id = 0
+            LibroRepository.updateLibro(
+                libro,
+                id,
+                success = {
+                    _closeActivity.value = true
+                },
+                failure = {
+                    it.printStackTrace()
+                })
+        }else {
+
+            LibroRepository.insertLibro(
+                libro,
+                success = {
+                    _closeActivity.value = true
+                },
+                failure = {
+                    it.printStackTrace()
+                })
+        }
 
     }
+
 
 
 }

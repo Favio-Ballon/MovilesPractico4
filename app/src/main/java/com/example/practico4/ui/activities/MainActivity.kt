@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
             val adapter = (binding.lstLibros.adapter as LibroAdapter)
             adapter.updateData(it)
         }
+
+
+
     }
 
     private fun setupRecyclerView() {
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
 
     override fun onLibrosClick(libro: Libro) {
         val intent = Intent(this, LibroDetailActivity::class.java)
-        intent.putExtra("categoriaId", libro.id)
+        intent.putExtra("libroId", libro.id)
         startActivity(intent)
     }
 

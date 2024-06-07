@@ -14,10 +14,27 @@ class LibroDetailViewModel : ViewModel() {
     }
     val libro: LiveData<Libro?> get() = _libro
 
+    private val _closeActivity: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    val closeActivity: LiveData<Boolean> get() = _closeActivity
+
     fun loadCategory(id: Int) {
         LibroRepository.getLibro(id,
             success = {
                 _libro.value = it
+            },
+            failure = {
+                it.printStackTrace()
+            })
+    }
+
+    fun deleteLibro(id: Int) {
+        LibroRepository.deleteLibro(
+            id,
+            success = {
+                _closeActivity.value = true
             },
             failure = {
                 it.printStackTrace()

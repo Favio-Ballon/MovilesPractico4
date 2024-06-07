@@ -1,16 +1,19 @@
 package com.example.practico4.ui.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.practico4.R
 import com.example.practico4.databinding.ActivityLibroSaveBinding
 import com.example.practico4.ui.viewmodels.LibroSaveViewModel
 
 class LibroSaveActivity : AppCompatActivity() {
+    private var id: Int = -1
     lateinit var binding: ActivityLibroSaveBinding
     private val model: LibroSaveViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +27,11 @@ class LibroSaveActivity : AppCompatActivity() {
             insets
         }
 
+        id = intent.getIntExtra("libroId", -1)
+        if (id != -1) {
+            model.loadCategory(id)
+        }
+
         setupEventListeners()
         setupViewModelObservers()
     }
@@ -32,6 +40,7 @@ class LibroSaveActivity : AppCompatActivity() {
     private fun setupEventListeners() {
         binding.btnSaveLibro.setOnClickListener {
             model.saveLibro(
+                id,
                 binding.txtTitulo.editText?.text.toString(),
                 binding.txtAutor.editText?.text.toString(),
                 binding.txtEditorial.editText?.text.toString(),
@@ -40,6 +49,19 @@ class LibroSaveActivity : AppCompatActivity() {
                 binding.txtSinopsis.editText?.text.toString(),
                 binding.txtCalificacion.editText?.text.toString().toInt()
             )
+        }
+
+        model.libro.observe(this) {
+            if (it == null) {
+                return@observe
+            }
+            binding.txtTitulo.editText?.setText(it.nombre)
+            binding.txtAutor.editText?.setText(it.autor)
+            binding.txtIsbn.editText?.setText(it.isbn)
+            binding.txtEditorial.editText?.setText(it.editorial)
+            binding.txtCalificacion.editText?.setText(it.calificacion.toString())
+            binding.txtSinopsis.editText?.setText(it.sinopsis)
+            binding.addImagen.editText?.setText(it.imagen)
         }
     }
 
