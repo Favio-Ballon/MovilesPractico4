@@ -59,11 +59,13 @@ object LibroRepository {
         service.insertLibro(libro).enqueue(object : Callback<Libro> {
             override fun onResponse(res: Call<Libro>, response: Response<Libro>) {
                 val objLibro = response.body()
+                Log.d("LibroInsertado", libro.toString())
                 success(objLibro!!)
             }
 
             override fun onFailure(res: Call<Libro>, t: Throwable) {
                 failure(t)
+                Log.d("LibronoInsertado", libro.toString())
             }
         })
     }

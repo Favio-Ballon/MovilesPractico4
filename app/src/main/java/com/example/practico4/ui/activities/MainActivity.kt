@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
         }
         setupRecyclerView()
         setupViewModelListeners()
-
+        setupEventListeners()
     }
 
     override fun onResume() {
@@ -59,5 +59,12 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
         val intent = Intent(this, LibroDetailActivity::class.java)
         intent.putExtra("categoriaId", libro.id)
         startActivity(intent)
+    }
+
+    private fun setupEventListeners() {
+        binding.btnAnadir.setOnClickListener {
+            val intent = Intent(this, LibroSaveActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
