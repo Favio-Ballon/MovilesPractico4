@@ -33,7 +33,7 @@ class LibroAdapter(val libroList: Libros, val listener: OnLibrosClickListener) :
     }
 
 
-    fun updateData(libroList: Libros) {
+    fun updateData(libroList: List<Libro>) {
         this.libroList.clear()
         this.libroList.addAll(libroList)
         notifyDataSetChanged()

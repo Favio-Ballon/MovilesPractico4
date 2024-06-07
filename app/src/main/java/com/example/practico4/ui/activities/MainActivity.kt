@@ -42,18 +42,18 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
     }
 
     private fun setupViewModelListeners() {
-        model.librosList.observe(this) {
+
+        model.librosList.observe(this) { libros ->
+            val sortedLibros = libros.sortedByDescending { it.calificacion }
             val adapter = (binding.lstLibros.adapter as LibroAdapter)
-            adapter.updateData(it)
+            adapter.updateData(sortedLibros)
         }
-
-
 
     }
 
     private fun setupRecyclerView() {
         binding.lstLibros.apply {
-            this.adapter = LibroAdapter(Libros(), this@MainActivity)
+            this.adapter = LibroAdapter(ArrayList(), this@MainActivity)
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
     }
