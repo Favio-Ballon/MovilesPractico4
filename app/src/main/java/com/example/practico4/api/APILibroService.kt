@@ -1,5 +1,7 @@
 package com.example.practico4.api
 
+import com.example.practico4.models.Genero
+import com.example.practico4.models.Generos
 import com.example.practico4.models.Libro
 import com.example.practico4.models.Libros
 import retrofit2.Call
@@ -39,5 +41,28 @@ interface APILibroService {
     ): Call<Void>
 
 
+    @GET("generos")
+    fun getGeneros(): Call<Generos>
+
+    @GET("generos/{id}")
+    fun getGeneroById(
+        @Path("id") id: Int
+    ): Call<Genero?>
+
+    @POST("generos")
+    fun insertGenero(
+        @Body genero: Genero
+    ): Call<Genero>
+
+    @PUT("generos/{id}")
+    fun updateGenero(
+        @Body genero: Genero,
+        @Path("id") id: Int
+    ): Call<Genero>
+
+    @DELETE("generos/{id}")
+    fun deleteGenero(
+        @Path("id") id: Int
+    ): Call<Void>
 
 }

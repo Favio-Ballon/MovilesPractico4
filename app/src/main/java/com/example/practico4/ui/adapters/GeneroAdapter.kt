@@ -50,6 +50,10 @@ class GeneroAdapter(val GeneroList: Generos, val listener: OnGeneroClickListener
                 btnBorrarGenero.setOnClickListener {
                     listener.onGeneroDelete(genero)
                 }
+
+                lblGenero.setOnClickListener {
+                    listener.onGeneroClick(genero)
+                }
             }
 
         }
@@ -58,6 +62,7 @@ class GeneroAdapter(val GeneroList: Generos, val listener: OnGeneroClickListener
     interface OnGeneroClickListener {
         fun onGeneroEdit(genero: Genero)
         fun onGeneroDelete(genero: Genero)
+        fun onGeneroClick(genero: Genero)
 
     }
 

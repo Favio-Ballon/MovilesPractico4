@@ -2,6 +2,8 @@ package com.example.practico4.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,7 @@ import com.example.practico4.ui.adapters.LibroAdapter
 import com.example.practico4.ui.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
+    private var id: Int = -1
     lateinit var binding: ActivityMainBinding
     private val model: MainViewModel by viewModels()
 
@@ -31,11 +34,30 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        id = intent.getIntExtra("libroId", -1)
+        if (id != -1) {
+            //model.loadCategory(id)
+        }
         setupRecyclerView()
         setupViewModelListeners()
         setupEventListeners()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_generos) {
+            val intent = Intent(this, GeneroActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+
+    }
     override fun onResume() {
         super.onResume()
         model.fetchListaLibros()

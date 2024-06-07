@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Practico4"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.GeneroSaveActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.GeneroActivity"
             android:exported="false" />
         <activity
