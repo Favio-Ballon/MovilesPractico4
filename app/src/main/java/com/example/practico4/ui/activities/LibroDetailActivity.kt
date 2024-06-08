@@ -3,6 +3,8 @@ package com.example.practico4.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,8 +40,19 @@ class LibroDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         model.loadCategory(id)
+
+        try {
+            // Pause for 4 seconds
+            Thread.sleep(4000)
+            model.loadCategory(id)
+        } catch (e: InterruptedException) {
+            // Handle exception
+            e.printStackTrace()
+        }
     }
+
 
     private fun setupViewModelObservers() {
         model.libro.observe(this) {
@@ -63,9 +76,13 @@ class LibroDetailActivity : AppCompatActivity() {
             }
             binding.lblLibroGeneros.text = temp
             Log.d("LibroDetailActivity", it.generos.toString())
-            Glide.with(this)
-                .load(it.imagen)
-                .into(binding.imagenLibro)
+            try {
+                Glide.with(this)
+                    .load(it.imagen)
+                    .into(binding.imagenLibro)
+            } catch (e: Exception) {
+                Log.d("error", "no se pudo cargar la imagen")
+            }
         }
         model.closeActivity.observe(this) {
             if (it) {

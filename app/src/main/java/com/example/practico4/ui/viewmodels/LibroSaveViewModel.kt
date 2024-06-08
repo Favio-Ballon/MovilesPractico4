@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.practico4.models.Genero
 import com.example.practico4.models.Libro
+import com.example.practico4.models.LibroGenero
+import com.example.practico4.models.Libros
+import com.example.practico4.repositories.GeneroRepository
 import com.example.practico4.repositories.LibroRepository
 
 class LibroSaveViewModel  : ViewModel() {
@@ -20,6 +23,17 @@ class LibroSaveViewModel  : ViewModel() {
     }
     val libro: LiveData<Libro?> get() = _libro
 
+    private val _editarGeneros: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+    val editarGeneros: LiveData<Boolean> get() = _editarGeneros
+
+    private val _librosList: MutableLiveData<Libros> by lazy {
+        MutableLiveData<Libros>(null)
+    }
+    val librosList: LiveData<Libros> get() = _librosList
+
+
     fun loadCategory(id: Int) {
         LibroRepository.getLibro(id,
             success = {
@@ -31,6 +45,7 @@ class LibroSaveViewModel  : ViewModel() {
     }
 
 
+
     fun saveLibro(
         id: Int,
         nombre: String,
@@ -40,6 +55,7 @@ class LibroSaveViewModel  : ViewModel() {
         imagen : String,
         sinopsis : String,
         calificacion: Int
+
     ) {
 
         val libro = Libro(
@@ -60,7 +76,7 @@ class LibroSaveViewModel  : ViewModel() {
                 libro,
                 id,
                 success = {
-                    _closeActivity.value = true
+                    _editarGeneros.value = true
                 },
                 failure = {
                     it.printStackTrace()
@@ -70,7 +86,7 @@ class LibroSaveViewModel  : ViewModel() {
             LibroRepository.insertLibro(
                 libro,
                 success = {
-                    _closeActivity.value = true
+                    _editarGeneros.value = true
                 },
                 failure = {
                     it.printStackTrace()
@@ -79,6 +95,78 @@ class LibroSaveViewModel  : ViewModel() {
 
     }
 
+    fun editarGeneros(
+        generosId : ArrayList<Int>,
+        generosNew : ArrayList<Int>? = null,
+        id : Int
+    )
+    {
+        if (generosNew != null){
+            for (generoId in generosId) {
+                if (!generosNew.contains(generoId)) {
+                    eliminarGeneroLibro(generoId, id)
+                }
+            }
+
+            for (generoId in generosNew) {
+                if (!generosId.contains(generoId)) {
+                    agregarGeneroLibro(generoId, id)
+                }
+            }
+        }
+        _closeActivity.value = true
+    }
+
+    fun agregarGeneroLibro(
+        generoId: Int,
+        libroId: Int
+    ){
+        val generoLibro = LibroGenero(
+            genero_id = generoId,
+            libro_id = libroId
+        )
+
+        GeneroRepository.insertLibroGenero(
+            generoLibro,
+            success = {
+                Log.d("LibroSaveViewModel", "Genero insertado")
+            },
+            failure = {
+                it.printStackTrace()
+            }
+        )
+    }
+
+    fun eliminarGeneroLibro(
+        generoId: Int,
+        libroId: Int
+    ){
+        val generoLibro = LibroGenero(
+            genero_id = generoId,
+            libro_id = libroId
+        )
+
+        GeneroRepository.deleteLibroGenero(
+            generoLibro,
+            success = {
+                Log.d("LibroSaveViewModel", "Genero eliminado")
+            },
+            failure = {
+                it.printStackTrace()
+            }
+        )
+    }
+
+    fun getLastId(){
+        LibroRepository.getLibroList(
+            success = {
+                _librosList.value = it
+            },
+            failure = {
+                it.printStackTrace()
+            }
+        )
+    }
 
 
 }
