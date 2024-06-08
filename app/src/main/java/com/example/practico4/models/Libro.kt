@@ -12,4 +12,5 @@ data class Libro(
     val calificacion: Int
 ){
     var id: Int? = null
+    val generos: Generos = ArrayList()
 }

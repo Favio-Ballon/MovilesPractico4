@@ -51,7 +51,18 @@ class LibroDetailActivity : AppCompatActivity() {
             binding.lblLibroDetailISBN.text = it.isbn
             binding.lblLibroDetailRating.text = it.calificacion.toString()
             binding.lblLibroDetailSinopsis.text = it.sinopsis
-            Log.d("LibroDetailActivity", it.imagen)
+            binding.lblLibroEditorial.text = it.editorial
+
+            var temp = ""
+            for (genero in it.generos) {
+                if (genero == it.generos.last()) {
+                    temp += genero.nombre
+                }else {
+                    temp += genero.nombre + ", "
+                }
+            }
+            binding.lblLibroGeneros.text = temp
+            Log.d("LibroDetailActivity", it.generos.toString())
             Glide.with(this)
                 .load(it.imagen)
                 .into(binding.imagenLibro)

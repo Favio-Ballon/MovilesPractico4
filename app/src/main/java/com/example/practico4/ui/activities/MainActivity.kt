@@ -34,10 +34,8 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        id = intent.getIntExtra("libroId", -1)
-        if (id != -1) {
-            //model.loadCategory(id)
-        }
+        id = intent.getIntExtra("generoId", -1)
+
         setupRecyclerView()
         setupViewModelListeners()
         setupEventListeners()
@@ -65,10 +63,24 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
 
     private fun setupViewModelListeners() {
 
-        model.librosList.observe(this) { libros ->
-            val sortedLibros = libros.sortedByDescending { it.calificacion }
-            val adapter = (binding.lstLibros.adapter as LibroAdapter)
-            adapter.updateData(sortedLibros)
+        model.librosList.observe(this) {libros ->
+
+            if(id != -1) {
+                val sortedLibros = arrayListOf<Libro>()
+                for (libro in libros) {
+                    for (genero in libro.generos) {
+                            if (genero.id == id) {
+                                sortedLibros.add(libro)
+                                val adapter = (binding.lstLibros.adapter as LibroAdapter)
+                                adapter.updateData(sortedLibros)
+                        }
+                    }
+                }
+            }else{
+                val sortedLibros = libros.sortedByDescending { it.calificacion }
+                val adapter = (binding.lstLibros.adapter as LibroAdapter)
+                adapter.updateData(sortedLibros)
+            }
         }
 
     }

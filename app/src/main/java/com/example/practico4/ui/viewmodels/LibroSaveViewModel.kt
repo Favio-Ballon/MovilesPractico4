@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.practico4.models.Genero
 import com.example.practico4.models.Libro
 import com.example.practico4.repositories.LibroRepository
 
