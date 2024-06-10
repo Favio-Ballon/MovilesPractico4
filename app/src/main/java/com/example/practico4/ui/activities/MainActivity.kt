@@ -65,22 +65,23 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
     private fun setupViewModelListeners() {
 
         model.librosList.observe(this) {libros ->
-
+            val librosList = ArrayList(libros)
             if(id != -1) {
-                val sortedLibros = arrayListOf<Libro>()
+                var sortedLibros = arrayListOf<Libro>()
                 for (libro in libros) {
                     for (genero in libro.generos) {
                             if (genero.id == id) {
                                 sortedLibros.add(libro)
-                                val adapter = (binding.lstLibros.adapter as LibroAdapter)
-                                adapter.updateData(sortedLibros)
                         }
                     }
                 }
-            }else{
-                val sortedLibros = libros.sortedByDescending { it.calificacion }
+                sortedLibros.sortByDescending { it.calificacion }
                 val adapter = (binding.lstLibros.adapter as LibroAdapter)
                 adapter.updateData(sortedLibros)
+            }else{
+                librosList.sortByDescending { it.calificacion }
+                val adapter = (binding.lstLibros.adapter as LibroAdapter)
+                adapter.updateData(librosList)
             }
         }
 
