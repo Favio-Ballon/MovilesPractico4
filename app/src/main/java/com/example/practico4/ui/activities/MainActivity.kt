@@ -2,6 +2,9 @@ package com.example.practico4.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +19,7 @@ import com.example.practico4.ui.adapters.LibroAdapter
 import com.example.practico4.ui.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
+    private var id: Int = -1
     lateinit var binding: ActivityMainBinding
     private val model: MainViewModel by viewModels()
 
@@ -31,33 +35,68 @@ class MainActivity : AppCompatActivity(), LibroAdapter.OnLibrosClickListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        id = intent.getIntExtra("generoId", -1)
+
         setupRecyclerView()
         setupViewModelListeners()
         setupEventListeners()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_generos) {
+            val intent = Intent(this, GeneroActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+
+    }
     override fun onResume() {
         super.onResume()
         model.fetchListaLibros()
     }
 
     private fun setupViewModelListeners() {
-        model.librosList.observe(this) {
-            val adapter = (binding.lstLibros.adapter as LibroAdapter)
-            adapter.updateData(it)
+
+        model.librosList.observe(this) {libros ->
+
+            if(id != -1) {
+                val sortedLibros = arrayListOf<Libro>()
+                for (libro in libros) {
+                    for (genero in libro.generos) {
+                            if (genero.id == id) {
+                                sortedLibros.add(libro)
+                                val adapter = (binding.lstLibros.adapter as LibroAdapter)
+                                adapter.updateData(sortedLibros)
+                        }
+                    }
+                }
+            }else{
+                val sortedLibros = libros.sortedByDescending { it.calificacion }
+                val adapter = (binding.lstLibros.adapter as LibroAdapter)
+                adapter.updateData(sortedLibros)
+            }
         }
+
     }
 
     private fun setupRecyclerView() {
         binding.lstLibros.apply {
-            this.adapter = LibroAdapter(Libros(), this@MainActivity)
+            this.adapter = LibroAdapter(ArrayList(), this@MainActivity)
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
     }
 
     override fun onLibrosClick(libro: Libro) {
+        Log.d("Libroooooooooooooooo", libro.id.toString())
         val intent = Intent(this, LibroDetailActivity::class.java)
-        intent.putExtra("categoriaId", libro.id)
+        intent.putExtra("libroId", libro.id)
         startActivity(intent)
     }
 

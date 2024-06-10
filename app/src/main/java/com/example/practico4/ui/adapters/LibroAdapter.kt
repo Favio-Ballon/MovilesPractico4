@@ -33,7 +33,7 @@ class LibroAdapter(val libroList: Libros, val listener: OnLibrosClickListener) :
     }
 
 
-    fun updateData(libroList: Libros) {
+    fun updateData(libroList: List<Libro>) {
         this.libroList.clear()
         this.libroList.addAll(libroList)
         notifyDataSetChanged()
@@ -51,10 +51,14 @@ class LibroAdapter(val libroList: Libros, val listener: OnLibrosClickListener) :
 
                 // Carga la imagen desde la url con GLide
                 if (libro.imagen != null) {
+                    try{
                     Log.d("imagen", libro.imagen)
                     Glide.with(itemView)
                         .load(libro.imagen)
                         .into(imagenLibro)
+                        }catch (e: Exception){
+                        Log.d("error", "no se pudo cargar la imagen")
+                    }
                 }
 
                 //set size of image

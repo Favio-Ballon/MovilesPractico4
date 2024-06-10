@@ -70,6 +70,54 @@ object LibroRepository {
         })
     }
 
+    fun updateLibro(
+        libro: Libro,
+        id: Int,
+        success: (Libro) -> Unit,
+        failure: (Throwable) -> Unit
+    ) {
+        val retrofit = RetrofitRepository.getRetrofitInstance()
+
+        val service: APILibroService =
+            retrofit.create(APILibroService::class.java)
+
+        val libroId = libro.id ?: 0
+
+        service.updateLibro(libro, id).enqueue(object : Callback<Libro> {
+            override fun onResponse(res: Call<Libro>, response: Response<Libro>) {
+                val objLibro = response.body()
+                Log.d("LibroActualizado", libro.toString())
+                success(objLibro!!)
+            }
+
+            override fun onFailure(res: Call<Libro>, t: Throwable) {
+                failure(t)
+                Log.d("LibroNoActualizado", libro.toString())
+            }
+        })
+    }
+
+    fun deleteLibro(
+        id: Int,
+        success: () -> Unit,
+        failure: (Throwable) -> Unit
+    ) {
+        val retrofit = RetrofitRepository.getRetrofitInstance()
+
+        val service: APILibroService =
+            retrofit.create(APILibroService::class.java)
+
+        service.deleteLibro(id).enqueue(object : Callback<Void> {
+            override fun onResponse(res: Call<Void>, response: Response<Void>) {
+                success()
+            }
+
+            override fun onFailure(res: Call<Void>, t: Throwable) {
+                failure(t)
+            }
+        })
+    }
+
 
 
 }
